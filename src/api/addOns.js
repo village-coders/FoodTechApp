@@ -1,0 +1,10 @@
+import { apiClient } from './client';
+
+export const getAddOns = () => apiClient('/add-on-applications');
+export const getAddOnById = (id) => apiClient(`/add-on-applications/${id}`);
+export const saveProductResponse = (id, productIdx, response) => apiClient(`/add-on-applications/${id}/save-product-response/${productIdx}`, {
+  method: 'PUT',
+  body: JSON.stringify({ response })
+});
+export const submitAllResponses = (id) => apiClient(`/add-on-applications/${id}/submit-all-responses`, { method: 'PUT' });
+export const completeAddOn = (id) => apiClient(`/add-on-applications/${id}/complete`, { method: 'PUT' });
