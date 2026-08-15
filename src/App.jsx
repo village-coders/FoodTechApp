@@ -7,6 +7,7 @@ import DashboardLayout from './routes/DashboardLayout';
 import NewAddOns from './routes/NewAddOns';
 import ManageAddOns from './routes/ManageAddOns';
 import AddOnDetail from './routes/AddOnDetail';
+import ProductDetail from './routes/ProductDetail';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: '/addon/:id',
     element: <ProtectedRoute><AddOnDetail /></ProtectedRoute>
+  },
+  {
+    path: '/addon/:id/product/:prodIdx',
+    element: <ProtectedRoute><ProductDetail /></ProtectedRoute>
   }
 ]);
 

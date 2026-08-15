@@ -13,13 +13,23 @@ export default function NewAddOns() {
   useEffect(() => {
     getAddOns()
       .then(res => {
-        const all = res.data || res;
+        const all = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        const userId = String(user?.id || user?._id || '');
+        const userEmail = user?.email?.toLowerCase();
+
         const myNew = all.filter(a => {
-          const isMine =
-            a.assigned_food_tech?._id === user?.id ||
-            a.assigned_food_tech === user?.id ||
-            a.assigned_food_techs?.some(ft => ft._id === user?.id);
-          const isNew = a.status === 'inspection_assigned';
+          const mainFtId = String(a.assigned_food_tech?._id || a.assigned_food_tech?.id || a.assigned_food_tech || '');
+          const mainFtEmail = a.assigned_food_tech?.email?.toLowerCase();
+          const matchesMain = (userId && mainFtId === userId) || (userEmail && mainFtEmail && mainFtEmail === userEmail);
+
+          const matchesArray = Array.isArray(a.assigned_food_techs) && a.assigned_food_techs.some(ft => {
+            const ftId = String(ft?._id || ft?.id || ft || '');
+            const ftEmail = ft?.email?.toLowerCase();
+            return (userId && ftId === userId) || (userEmail && ftEmail && ftEmail === userEmail);
+          });
+
+          const isMine = matchesMain || matchesArray || (!a.assigned_food_tech && (!a.assigned_food_techs || a.assigned_food_techs.length === 0));
+          const isNew = a.status === 'ft_assigned' || a.status === 'inspection_assigned' || a.status === 'assigned';
           return isMine && isNew;
         });
         setApps(myNew);
