@@ -19,16 +19,10 @@ const router = createBrowserRouter([
     element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <NewAddOns /> },
-      { path: 'manage', element: <ManageAddOns /> }
+      { path: 'manage', element: <ManageAddOns /> },
+      { path: 'addon/:id', element: <AddOnDetail /> },
+      { path: 'addon/:id/product/:prodIdx', element: <ProductDetail /> }
     ]
-  },
-  {
-    path: '/addon/:id',
-    element: <ProtectedRoute><AddOnDetail /></ProtectedRoute>
-  },
-  {
-    path: '/addon/:id/product/:prodIdx',
-    element: <ProtectedRoute><ProductDetail /></ProtectedRoute>
   }
 ]);
 
