@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import StatusBadge from '../components/StatusBadge';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { getAddOnById, completeAddOn, requestProductForm } from '../api/addOns';
+import { getAddOnById, markFormReceived, requestProductForm } from '../api/addOns';
 import { getFileUrl } from '../api/client';
-import { ArrowLeft, Package, CheckCircle, FileText, ExternalLink, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Package, CheckCircle, FileText, ExternalLink, ChevronRight, ChevronDown, ChevronUp, FileCheck } from 'lucide-react';
 import LoadingState from '../components/LoadingState';
 
 export default function AddOnDetail() {
@@ -40,23 +40,28 @@ export default function AddOnDetail() {
     );
   }
 
-  const isComplete = appData.status?.includes('complete') || appData.status === 'ready_for_certificate';
+  const isFormReceived = ['all_forms_received', 'product_form_approved', 'ready_for_certificate', 'completed'].includes(appData.status);
   const formRequested = appData.status === 'product_approval_form_enabled' || Boolean(appData.product_approval_form?.sent_at);
 
   const toggleExpand = (idx) => {
     setExpandedIndex(prev => (prev === idx ? null : idx));
   };
 
-  const handleComplete = async () => {
+  const handleMarkFormReceived = async () => {
     setSubmitting(true);
     try {
-      await completeAddOn(appData._id || appData.id);
-      navigate(-1);
+      const res = await markFormReceived(appData._id || appData.id);
+      if (res.data) {
+        setAppData(res.data);
+      } else {
+        setAppData(a => ({ ...a, status: 'all_forms_received' }));
+      }
+      setShowConfirm(false);
+      alert('Product Approval Form marked as received successfully!');
     } catch (err) {
-      alert(err.message);
+      alert(err.message || 'Failed to mark form as received');
     } finally {
       setSubmitting(false);
-      setShowConfirm(false);
     }
   };
 
@@ -220,7 +225,7 @@ export default function AddOnDetail() {
         )}
 
         {/* Actions */}
-        {!isComplete && (
+        {!isFormReceived && (
           <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
             {!formRequested ? (
               <button
@@ -254,26 +259,39 @@ export default function AddOnDetail() {
               </div>
             )}
 
-            <button className="btn btn-primary" onClick={() => setShowConfirm(true)} style={{ borderRadius: 14, padding: 14 }}>
-              <CheckCircle size={18} /> Mark as Completed
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowConfirm(true)}
+              style={{
+                borderRadius: 14,
+                padding: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                fontSize: 14,
+                fontWeight: 700
+              }}
+            >
+              <CheckCircle size={18} /> Mark Product Approval Form Received
             </button>
           </div>
         )}
 
-        {isComplete && (
+        {isFormReceived && (
           <div className="card" style={{ textAlign: 'center', background: 'var(--status-done-bg)', border: '1px solid var(--primary-border)' }}>
             <CheckCircle size={22} color="var(--primary)" style={{ marginBottom: 6 }} />
-            <p style={{ color: 'var(--primary)', fontWeight: 600, fontSize: 14 }}>Review completed</p>
+            <p style={{ color: 'var(--primary)', fontWeight: 600, fontSize: 14, margin: 0 }}>Product Approval Form Received</p>
           </div>
         )}
       </div>
 
       {showConfirm && (
         <ConfirmDialog
-          title="Complete Review"
-          message="Are you sure you want to mark this add-on application as complete?"
-          confirmLabel="Yes, Complete"
-          onConfirm={handleComplete}
+          title="Confirm Form Received"
+          message="Are you sure you want to mark the Product Approval Form responses as received?"
+          confirmLabel={submitting ? 'Please wait…' : 'Yes, Mark as Received'}
+          onConfirm={handleMarkFormReceived}
           onCancel={() => setShowConfirm(false)}
         />
       )}

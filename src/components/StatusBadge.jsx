@@ -12,6 +12,9 @@ const STATUS_MAP = {
   'Completed': { label: 'Completed', bg: 'var(--status-done-bg)', color: 'var(--status-done-text)' },
   // Add-on statuses
   submitted: { label: 'Submitted', bg: 'var(--status-new-bg)', color: 'var(--status-new-text)' },
+  product_approval_form_enabled: { label: 'Form Requested', bg: 'var(--status-waiting-bg)', color: 'var(--status-waiting-text)' },
+  all_forms_received: { label: 'Forms Received', bg: 'var(--status-done-bg)', color: 'var(--status-done-text)' },
+  product_form_approved: { label: 'Form Approved', bg: 'var(--status-done-bg)', color: 'var(--status-done-text)' },
   approved: { label: 'Approved', bg: 'var(--status-done-bg)', color: 'var(--status-done-text)' },
   completed: { label: 'Completed', bg: 'var(--status-done-bg)', color: 'var(--status-done-text)' },
   ready_for_certificate: { label: 'Ready for Cert.', bg: 'var(--status-progress-bg)', color: 'var(--status-progress-text)' },
