@@ -162,30 +162,6 @@ export default function AddOnDetail() {
           ))}
         </div>
 
-        {/* Form Overview Banner */}
-        {formRequested && (
-          <div className="card" style={{ marginTop: 12, padding: '12px 14px', background: '#f0f9ff', border: '1px solid #bae6fd' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#0369a1', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <FileText size={15} /> Product Approval Form Details
-            </div>
-            {appData.product_approval_form?.form_text && (
-              <p style={{ fontSize: 12, color: '#0c4a6e', margin: '4px 0 6px 0', lineHeight: 1.4 }}>
-                {appData.product_approval_form.form_text}
-              </p>
-            )}
-            {appData.product_approval_form?.form_file_url && (
-              <a
-                href={getFileUrl(appData.product_approval_form.form_file_url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: 12, color: '#0284c7', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 4 }}
-              >
-                <ExternalLink size={13} /> View Form Template Document
-              </a>
-            )}
-          </div>
-        )}
-
         {/* Products */}
         <p className="section-heading" style={{ marginTop: 16 }}>Assigned Products ({allProductItems.length})</p>
 

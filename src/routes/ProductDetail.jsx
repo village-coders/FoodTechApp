@@ -250,8 +250,6 @@ export default function ProductDetail() {
 
   const [appData, setAppData] = useState(state?.app || null);
   const [loading, setLoading] = useState(!state?.app);
-  const [saving, setSaving] = useState(false);
-  const [reviewNote, setReviewNote] = useState('');
 
   useEffect(() => {
     if (!appData) {
@@ -306,19 +304,6 @@ export default function ProductDetail() {
 
   const isComplete = appData.status?.includes('complete') || appData.status === 'ready_for_certificate';
   const formRequested = appData.status === 'product_approval_form_enabled' || Boolean(appData.product_approval_form?.sent_at);
-
-  const handleSaveNotes = async () => {
-    if (!reviewNote.trim()) return;
-    setSaving(true);
-    try {
-      await saveProductResponse(appData._id || appData.id, indexNum, reviewNote);
-      alert('Review notes saved successfully!');
-    } catch (err) {
-      alert(err.message || 'Failed to save notes');
-    } finally {
-      setSaving(false);
-    }
-  };
 
   return (
     <>
@@ -447,38 +432,12 @@ export default function ProductDetail() {
               <p style={{ fontSize: 13, color: 'var(--text-3)', margin: 0 }}>
                 {formRequested ? 'Client approval form response is pending submission.' : 'Product Approval Form has not been requested yet.'}
               </p>
+              <div style={{ fontSize: 13, color: 'var(--text-3)' }}>
+                No response details available for this product.
+              </div>
             </div>
           )}
         </div>
-
-        {/* Food Tech Review Notes Section */}
-        {!isComplete && (
-          <div className="card" style={{ marginTop: 14 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-1)', marginBottom: 4 }}>
-              Food Tech Review Notes
-            </div>
-            <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 0, marginBottom: 8 }}>
-              Add notes or evaluation for {prodName}.
-            </p>
-            <textarea
-              className="form-control"
-              rows={3}
-              placeholder="Add review notes…"
-              value={reviewNote}
-              onChange={e => setReviewNote(e.target.value)}
-              style={{ resize: 'none', fontSize: 13, padding: '10px 12px', marginBottom: 10 }}
-            />
-            <button
-              className="btn btn-primary"
-              onClick={handleSaveNotes}
-              disabled={saving || !reviewNote.trim()}
-              style={{ borderRadius: 12, padding: 12, width: '100%' }}
-            >
-              {saving ? <span className="spinner" /> : <Save size={16} />}
-              Save Review Notes
-            </button>
-          </div>
-        )}
       </div>
     </>
   );
