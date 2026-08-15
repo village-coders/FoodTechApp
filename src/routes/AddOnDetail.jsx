@@ -4,7 +4,7 @@ import StatusBadge from '../components/StatusBadge';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { getAddOnById, markFormReceived, requestProductForm } from '../api/addOns';
 import { getFileUrl } from '../api/client';
-import { ArrowLeft, Package, CheckCircle, FileText, ExternalLink, ChevronRight, ChevronDown, ChevronUp, FileCheck } from 'lucide-react';
+import { ArrowLeft, Package, CheckCircle, FileText, ExternalLink, ChevronRight, ChevronDown, ChevronUp, FileCheck, Building2, MapPin, User, Mail, Phone, Users, Award } from 'lucide-react';
 import LoadingState from '../components/LoadingState';
 
 export default function AddOnDetail() {
@@ -132,39 +132,82 @@ export default function AddOnDetail() {
           <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-1)' }}>Add-on Detail</span>
         </div>
 
-        {/* Hero */}
-        <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-            <div>
+        {/* Company & Site Overview Card */}
+        <div className="card" style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+            <div style={{ flex: 1, minWidth: 0, paddingRight: 8 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-1)', marginBottom: 4 }}>
-                {appData.client_id?.company_name || 'Company'}
+                {appData.client_id?.company_name || appData.company_name || appData.application_id?.establishment_name || 'Company'}
               </div>
-              <div style={{ fontSize: 13, color: 'var(--text-3)' }}>
-                {appData.certificate_id?.certificate_number || '—'}
-              </div>
+              {appData.certificate_id?.certificate_number ? (
+                <div style={{ fontSize: 12, color: 'var(--text-3)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Award size={13} color="var(--text-3)" /> Certificate: {appData.certificate_id.certificate_number}
+                </div>
+              ) : (appData.application_id?.application_number ? (
+                <div style={{ fontSize: 12, color: 'var(--text-3)' }}>
+                  App Ref: {appData.application_id.application_number}
+                </div>
+              ) : null)}
             </div>
             <StatusBadge status={appData.status} />
           </div>
-          {appData.action_type && (
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--primary)', background: 'var(--primary-subtle)', padding: '3px 10px', borderRadius: 99 }}>
-              {appData.action_type?.toUpperCase()} action
-            </span>
-          )}
-        </div>
 
-        {/* Info rows */}
-        <div className="card" style={{ padding: '4px 16px' }}>
-          {[
-            { label: 'Food Tech(s)', value: getFoodTechsList() },
-            { label: 'Contact', value: appData.contact_name || '—' },
-            { label: 'Email', value: appData.contact_email || '—' },
-            { label: 'Phone', value: appData.contact_phone || '—' },
-          ].map(({ label, value }) => (
-            <div key={label} className="detail-row">
-              <div className="detail-label">{label}</div>
-              <div className="detail-value">{value}</div>
+          {/* Action tag */}
+          {appData.action_type && (
+            <div style={{ marginBottom: 10 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', background: 'var(--primary-subtle)', padding: '3px 10px', borderRadius: 99 }}>
+                {appData.action_type?.toUpperCase()} ACTION
+              </span>
             </div>
-          ))}
+          )}
+
+          {/* Details list */}
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="detail-row" style={{ padding: '3px 0' }}>
+              <div className="detail-label" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-3)' }}>
+                <MapPin size={14} color="var(--text-3)" /> Site / Branch
+              </div>
+              <div className="detail-value" style={{ fontWeight: 600 }}>
+                {appData.site_id?.name || appData.site_id?.address || appData.application_id?.site_name || appData.site_name || appData.branch_name || 'Main Site / Branch'}
+              </div>
+            </div>
+
+            <div className="detail-row" style={{ padding: '3px 0' }}>
+              <div className="detail-label" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-3)' }}>
+                <User size={14} color="var(--text-3)" /> Contact
+              </div>
+              <div className="detail-value">
+                {appData.contact_name || appData.client_id?.full_name || '—'}
+              </div>
+            </div>
+
+            <div className="detail-row" style={{ padding: '3px 0' }}>
+              <div className="detail-label" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-3)' }}>
+                <Mail size={14} color="var(--text-3)" /> Email
+              </div>
+              <div className="detail-value" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {appData.contact_email || appData.client_id?.email || '—'}
+              </div>
+            </div>
+
+            <div className="detail-row" style={{ padding: '3px 0' }}>
+              <div className="detail-label" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-3)' }}>
+                <Phone size={14} color="var(--text-3)" /> Phone
+              </div>
+              <div className="detail-value">
+                {appData.contact_phone || appData.client_id?.phone || '—'}
+              </div>
+            </div>
+
+            <div className="detail-row" style={{ padding: '3px 0' }}>
+              <div className="detail-label" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-3)' }}>
+                <Users size={14} color="var(--text-3)" /> Food Tech(s)
+              </div>
+              <div className="detail-value" style={{ fontWeight: 600, color: 'var(--primary)' }}>
+                {getFoodTechsList()}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Products */}
