@@ -6,6 +6,7 @@ import { getAddOnById, markFormReceived, requestProductForm } from '../api/addOn
 import { getFileUrl } from '../api/client';
 import { ArrowLeft, Package, CheckCircle, FileText, ExternalLink, ChevronRight, ChevronDown, ChevronUp, FileCheck, Building2, MapPin, User, Mail, Phone, Users, Award } from 'lucide-react';
 import LoadingState from '../components/LoadingState';
+import Toast from '../components/Toast';
 
 export default function AddOnDetail() {
   const { id } = useParams();
@@ -18,6 +19,8 @@ export default function AddOnDetail() {
   const [requestingForm, setRequestingForm] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [responses, setResponses] = useState({});
+  const [toast, setToast] = useState(null); // { message, type }
+  const showToast = (message, type = 'info') => setToast({ message, type });
 
   useEffect(() => {
     if (!appData) {
@@ -57,9 +60,9 @@ export default function AddOnDetail() {
         setAppData(a => ({ ...a, status: 'all_forms_received' }));
       }
       setShowConfirm(false);
-      alert('Product Approval Form marked as received successfully!');
+      showToast('Product Approval Form marked as received successfully!', 'success');
     } catch (err) {
-      alert(err.message || 'Failed to mark form as received');
+      showToast(err.message || 'Failed to mark form as received', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -70,9 +73,9 @@ export default function AddOnDetail() {
     try {
       const res = await requestProductForm(appData._id || appData.id);
       if (res.data) setAppData(res.data);
-      alert('Product Approval Form requested successfully! Applicant notified.');
+      showToast('Product Approval Form requested successfully! Applicant notified.', 'success');
     } catch (err) {
-      alert(err.message || 'Failed to request Product Approval Form');
+      showToast(err.message || 'Failed to request Product Approval Form', 'error');
     } finally {
       setRequestingForm(false);
     }
@@ -119,6 +122,7 @@ export default function AddOnDetail() {
 
   return (
     <>
+      <Toast message={toast?.message} type={toast?.type} onClose={() => setToast(null)} />
       <div className="app-content" style={{ paddingBottom: 100 }}>
 
         {/* Back + title row */}
