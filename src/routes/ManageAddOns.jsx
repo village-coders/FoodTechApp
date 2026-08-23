@@ -28,7 +28,7 @@ export default function ManageAddOns() {
             return (userId && ftId === userId) || (userEmail && ftEmail && ftEmail === userEmail);
           });
 
-          return matchesMain || matchesArray || (!a.assigned_food_tech && (!a.assigned_food_techs || a.assigned_food_techs.length === 0));
+          return Boolean(matchesMain || matchesArray);
         });
         setApps(mine);
       })

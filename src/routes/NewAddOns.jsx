@@ -28,7 +28,7 @@ export default function NewAddOns() {
             return (userId && ftId === userId) || (userEmail && ftEmail && ftEmail === userEmail);
           });
 
-          const isMine = matchesMain || matchesArray || (!a.assigned_food_tech && (!a.assigned_food_techs || a.assigned_food_techs.length === 0));
+          const isMine = Boolean(matchesMain || matchesArray);
           const isNew = a.status === 'ft_assigned' || a.status === 'inspection_assigned' || a.status === 'assigned';
           return isMine && isNew;
         });
